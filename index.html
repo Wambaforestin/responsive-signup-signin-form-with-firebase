@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Sign in/sign up form</title>
+    <link rel="stylesheet" href="CSS/styles.css">
+    <!-- from the boxicons.com website , the link will take the appropriate icons for my portfolio -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="login">
+        <div class="login-content">
+            <div class="login-img">
+                <img src="images/bg.jpg" alt="login image">
+            </div>
+            <div class="login-forms">
+                <form action="#" class="login-register" id="login-in">
+                    <h1 class="login-title">Sign In</h1>
+                    <div class="login-box">
+                        <i class='bx bxs-envelope login-icon'></i>
+                        <input type="email" id="email" class="login-input" placeholder="Enter your email">
+                    </div>
+                    <div class="login-box">
+                        <i class='bx bxs-lock-alt login-icon'></i>
+                        <input type="password" id="password" class="login-input" placeholder="Enter your password">
+                    </div>
+
+                    <a href="#" class="login-forgot">Forgot password?</a>
+                    <button type="submit" class="login-btn" id="loginBtnIn">Sign In</button>
+
+                    <div>
+                        <span class="login-account">Don't have an account?</span>
+                        <span class="login-signin" id="sign-up">Sign Up</span>
+                    </div>
+                </form>
+
+                <form action="#" class="login-create none" id="login-up">
+                    <h1 class="login-title">Create Account</h1>
+                    <div class="login-box">
+                        <i class='bx bxs-user login-icon'></i>
+                        <input type="text" id="username" class="login-input" placeholder="Enter your name">
+                    </div>
+
+                    <div class="login-box">
+                        <i class='bx bxs-envelope login-icon'></i>
+                        <input type="email" id="email" class="login-input" placeholder="Enter your email">
+                    </div>
+
+                    <div class="login-box">
+                        <i class='bx bxs-lock-alt login-icon'></i>
+                        <input type="password" id="password" class="login-input" placeholder="Enter your password">
+                    </div>
+
+                    <a href="#" class="login-forgot">Forgot password?</a>
+                    <button type="submit" class="login-btn" id="loginBtnUp">Sign Up</button>
+
+                    <div>
+                        <span class="login-account">Already have an account?</span>
+                        <span class="login-signup" id="sign-in">Sign In</span>
+                    </div>
+
+                    <div class="login-or">
+                        <span class="login-or-line"></span>
+                        <span class="login-or-text">OR</span>
+                        <span class="login-or-line"></span>
+                    </div>
+
+                    <div class="login-social">
+                        <a href="#" class="login-social-icon"><i class='bx bxl-facebook-circle'></i></a>
+                        <a href="#" class="login-social-icon"><i class='bx bxl-twitter'></i></a>
+                        <a href="#" class="login-social-icon"><i class='bx bxl-google'></i></a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="js/main.js"></script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { getDatabase, set, ref, update } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBlCKdyZu__FVYCEyPhdNR7dy9OZ9kPBvg",
+            authDomain: "authenticationform-60daysjsln.firebaseapp.com",
+            databaseURL: "https://authenticationform-60daysjsln-default-rtdb.firebaseio.com",
+            projectId: "authenticationform-60daysjsln",
+            storageBucket: "authenticationform-60daysjsln.appspot.com",
+            messagingSenderId: "214543964237",
+            appId: "1:214543964237:web:d6d1a68b579cf2cdb72404"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth();
+
+        //-----------------------------<Register>----------------------------
+
+        loginBtnUp.addEventListener('click', (e) => {
+
+            //getting the values
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var username = document.getElementById('username').value;
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed up 
+                    const user = userCredential.user;
+                    set(ref(database, 'users/' + user.uid), {
+                        username: username,
+                        email: email
+                    })
+                    alert("Account created successfully");
+                    // ...
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+
+                    alert(errorMessage);
+                    // ..
+                });
+        });
+        //-----------------------------<login>----------------------------
+
+        loginBtnIn.addEventListener('click', (e) => {
+
+            //getting the values
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed in 
+                    const user = userCredential.user;
+
+                    const dt = new Date();
+                    update(ref(database, 'users/' + user.uid), {
+                        lastLogin: dt.toUTCString()
+                    })
+                    alert("Signed in successfully");
+                    // ...
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    alert(errorMessage);
+                });
+        });
+
+        //-----------------------------<logout and managing users>----------------------------
+            //to be added soon.....
+    </script>
+</body>
+</html>
