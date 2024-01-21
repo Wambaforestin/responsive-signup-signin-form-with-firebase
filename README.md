@@ -1,6 +1,4 @@
-# Project Name
-
-Responsive Signin - Signup Authenticatio form Using firebase
+# Responsive Signin - Signup Authenticatio form Using firebase
 
 ## Description
 
